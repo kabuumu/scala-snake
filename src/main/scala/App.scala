@@ -19,11 +19,11 @@ object App extends JFXApp {
   val startingState: GameState = GameState(
     snake = Snake(
       body = Seq(
-        Main.getRandomPosition(32)
+        Main.getRandomPosition(Main.bounds)
       ),
       facing = Main.Up
     ),
-    food = Main.getRandomPosition(32),
+    food = Main.getRandomPosition(Main.bounds),
     crash = false,
     score = 0
   )
@@ -47,7 +47,7 @@ object App extends JFXApp {
 
   AnimationTimer.apply(
     l => {
-      if(l - lastDelta > 100000000-(gameState.score*1000000) && !gameState.crash){
+      if(l - lastDelta > 100000000-(gameState.score*2000000) && !gameState.crash){
         gameState = Main.gameLoop(gameState, keyCode)
         Main.output(gameState, canvas)
         lastDelta = l

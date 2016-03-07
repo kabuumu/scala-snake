@@ -32,7 +32,14 @@ object Main {
 
   def getCrash(snakeHead: Position, body: Seq[Position]) = body.contains(snakeHead)
 
-  def getFoodPos(food: Position, eaten: Boolean) = if (eaten) getRandomPosition(bounds) else food
+  def getFoodPos(food: Position, blockers: Seq[Position], eaten: Boolean) = {
+    def getUnoccupiedPosition:Position = {
+      val pos = getRandomPosition(bounds)
+
+      if (blockers.contains(pos)) getUnoccupiedPosition else pos
+    }
+    if (eaten) getUnoccupiedPosition else food
+  }
 
   def gameLoop(state: GameState, input: KeyCode) = {
     val facing = getFacing(state.snake.facing, input)
@@ -40,7 +47,7 @@ object Main {
     val eaten = getFoodCollision(snakeHead, state.food)
     val snakeBody = moveSnake(snakeHead, state.snake.body, eaten)
     val crash = getCrash(snakeHead, state.snake.body)
-    val food = getFoodPos(state.food, eaten)
+    val food = getFoodPos(state.food, snakeBody, eaten)
     val score = if (eaten) state.score + 1 else state.score
 
     GameState(Snake(snakeBody, facing), food, crash, score)
